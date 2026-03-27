@@ -38,7 +38,7 @@ export function AdminDashboard({ initialTokens, initialBanners }: { initialToken
   }
 
   async function uploadBannerImage(file: File) {
-    const bucket = process.env.NEXT_PUBLIC_STORAGE_BANNERS_BUCKET || 'banner-images';
+    const bucket = process.env.NEXT_PUBLIC_STORAGE_BANNERS_BUCKET || 'banners';
     const supabase = getPublicSupabaseClient();
     const filePath = `banners/${Date.now()}-${file.name.replace(/\s+/g, '-')}`;
     const { error } = await supabase.storage.from(bucket).upload(filePath, file, { cacheControl: '3600' });

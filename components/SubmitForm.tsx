@@ -12,7 +12,7 @@ export function SubmitForm() {
   const [preview, setPreview] = useState('');
 
   const storageBucket = useMemo(
-    () => process.env.NEXT_PUBLIC_STORAGE_TOKENS_BUCKET || 'token-images',
+    () => process.env.NEXT_PUBLIC_STORAGE_TOKENS_BUCKET || 'token-logos',
     []
   );
 
