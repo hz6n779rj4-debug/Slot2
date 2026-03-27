@@ -1,40 +1,53 @@
 # TonGemz
 
-TonGemz is a Vercel-ready Next.js app for listing TON projects in the same general product style as Solhunters, but rebranded for TON with neon-blue visuals.
+TonGemz is a TON-themed token discovery site inspired by the layout style of Solhunters, but rebuilt for TON and ready for Vercel.
 
-## Features
-- Homepage with hero, promoted section, sponsored banners, and searchable token cards
-- Public submit form for new TON token listings
-- Admin login protected with `ADMIN_SECRET`
-- Admin dashboard to approve, promote, trend, reject, and manage banners
-- Supabase-ready schema for tokens and banners
-- Optional public storage uploads for token and banner images
+## What is finished
+
+- Next.js app router project
+- TonGemz homepage and submit flow
+- admin login and dashboard
+- banner manager
+- Supabase schema for tokens and banners
+- **live token market data enrichment** using DexScreener for TON pairs
+
+## Live token data
+
+Approved and promoted tokens are enriched on the server using the token contract address. The project currently pulls:
+
+- price
+- 24h price change
+- market cap / FDV
+- 24h volume
+- liquidity
+- buys and sells
+- chart URL
+
+The code fetches the best TON trading pair and sorts listings with promoted tokens first, then by live 24h volume.
 
 ## Deploy on Vercel
-1. Create a new Supabase project.
-2. Run `supabase-schema.sql` in the SQL editor.
-3. In Storage, create two **public** buckets:
-   - `token-images`
-   - `banner-images`
-4. Add the environment variables from `.env.example` to Vercel.
-5. Deploy the project.
 
-## Local development
-```bash
-npm install
-npm run dev
-```
+1. Upload the project to GitHub
+2. Import into Vercel
+3. Add environment variables from `.env.example`
+4. Create the Supabase tables with `supabase-schema.sql`
+5. Add your first token in admin or via submit form and approve it
 
 ## Environment variables
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `ADMIN_SECRET`
-- `NEXT_PUBLIC_SITE_URL`
-- `NEXT_PUBLIC_STORAGE_TOKENS_BUCKET`
-- `NEXT_PUBLIC_STORAGE_BANNERS_BUCKET`
+
+See `.env.example`.
 
 ## Notes
-- Public listing submissions go into `pending` status.
-- Admin actions use the service role key.
-- If Supabase is not connected yet, the homepage falls back to demo content so the UI still loads.
+
+- Live data depends on the token having a detectable TON trading pair.
+- If a token has no pair yet, the card still shows normally but without live stats.
+- Home data is revalidated every 60 seconds.
+
+
+## Storage buckets
+
+Use these exact bucket names in Supabase:
+- token-logos
+- banners
+
+For Netlify, this repo includes `.nvmrc` and `netlify.toml` to pin Node 20.
