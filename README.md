@@ -1,53 +1,42 @@
-# TonGemz
+# TonGemz Simple Clean
 
-TonGemz is a TON-themed token discovery site inspired by the layout style of Solhunters, but rebuilt for TON and ready for Vercel.
+This is the simple clean version.
 
-## What is finished
+## Netlify env vars
 
-- Next.js app router project
-- TonGemz homepage and submit flow
-- admin login and dashboard
-- banner manager
-- Supabase schema for tokens and banners
-- **live token market data enrichment** using DexScreener for TON pairs
+- NEXT_PUBLIC_SUPABASE_URL
+- NEXT_PUBLIC_SUPABASE_ANON_KEY
+- NEXT_PUBLIC_STORAGE_TOKENS_BUCKET=token-logos
 
-## Live token data
+## Supabase
 
-Approved and promoted tokens are enriched on the server using the token contract address. The project currently pulls:
+Use open insert policy on `public.tokens` for now:
 
-- price
-- 24h price change
-- market cap / FDV
-- 24h volume
-- liquidity
-- buys and sells
-- chart URL
+```sql
+alter table public.tokens enable row level security;
 
-The code fetches the best TON trading pair and sorts listings with promoted tokens first, then by live 24h volume.
+drop policy if exists "Anyone can submit tokens" on public.tokens;
+create policy "Anyone can submit tokens"
+on public.tokens
+for insert
+to anon, authenticated
+with check (true);
+```
 
-## Deploy on Vercel
+Public read approved:
 
-1. Upload the project to GitHub
-2. Import into Vercel
-3. Add environment variables from `.env.example`
-4. Create the Supabase tables with `supabase-schema.sql`
-5. Add your first token in admin or via submit form and approve it
+```sql
+drop policy if exists "Public can view approved tokens" on public.tokens;
+create policy "Public can view approved tokens"
+on public.tokens
+for select
+to anon, authenticated
+using (status = 'approved');
+```
 
-## Environment variables
+Set defaults:
 
-See `.env.example`.
-
-## Notes
-
-- Live data depends on the token having a detectable TON trading pair.
-- If a token has no pair yet, the card still shows normally but without live stats.
-- Home data is revalidated every 60 seconds.
-
-
-## Storage buckets
-
-Use these exact bucket names in Supabase:
-- token-logos
-- banners
-
-For Netlify, this repo includes `.nvmrc` and `netlify.toml` to pin Node 20.
+```sql
+alter table public.tokens alter column status set default 'pending';
+alter table public.tokens alter column chain set default 'ton';
+```
