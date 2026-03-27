@@ -1,21 +1,32 @@
 import './globals.css';
-import type { Metadata } from 'next';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
+import Link from 'next/link';
 
-export const metadata: Metadata = {
+export const metadata = {
   title: 'TonGemz | Find TON Gems',
-  description: 'Discover promoted and trending TON projects on TonGemz.'
+  description: 'Discover and submit TON gems',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <div className="page-bg" />
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <div className="container">
+          <header className="header">
+            <div className="brand">
+              <div className="logo" />
+              <div>
+                <div className="title">TONGEMZ</div>
+                <div className="subtitle">Find TON Gems</div>
+              </div>
+            </div>
+            <nav className="nav">
+              <Link href="/">Discover</Link>
+              <Link href="/submit">Submit Coin</Link>
+            </nav>
+          </header>
+          {children}
+          <div className="footer">TonGemz</div>
+        </div>
       </body>
     </html>
   );
